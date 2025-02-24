@@ -13,14 +13,32 @@
     <input type="password" id="password" />
     <br />
     <button id="loginButton">login</button>
+    <button id="registerButton">register</button>
 </body>
 <script defer>
-    const button = document.getElementById("loginButton")
+    const loginButton = document.getElementById("loginButton")
+    const registerButton = document.getElementById("registerButton")
 
-    button.onclick = (_, ok) => {
+    registerButton.onclick = () => {
         const username = document.getElementById("username")
         const password = document.getElementById("password")
-        fetch('http://127.0.0.1:3000/', {
+
+        fetch('http://127.0.0.1:3000/register', {
+            body: JSON.stringify({
+                username: username.value,
+                password: password.value,
+            }),
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+    }
+
+    loginButton.onclick = (_, ok) => {
+        const username = document.getElementById("username")
+        const password = document.getElementById("password")
+        fetch('http://127.0.0.1:3000/login', {
             body: JSON.stringify({
                 username: username.value,
                 password: password.value,
