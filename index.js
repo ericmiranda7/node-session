@@ -14,13 +14,13 @@ const conn = await mysql.createConnection('mysql://root:pass@localhost:5436/sess
 
 
 app.post('/login', async (req, res) => {
-    console.log(req.body)
-    const [result, fields] = await conn.execute(
-        'SELECT * FROM users WHERE username = ?',
-        ['eric']
-    )
-    console.log(result)
-    res.send('Hello there' + result[0])
+    const [users, fields] = await conn.execute('SELECT * FROM users WHERE username = ?', [req.body.username])
+    hasher({password: req.body.password, salt: users[0].salt}, (err, pass, salt, hash) => {
+        console.log(users)
+        console.log(hash)
+        if (hash === users[0].password) console.log('yay')
+        else console.log('nay')
+    })
 })
 
 app.post('/register', async (req, res) => {
