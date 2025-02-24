@@ -2,7 +2,9 @@ import express from 'express'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import mysql from 'mysql2/promise'
+import bkfd2Password from 'pbkdf2-password'
 
+const hasher = bkfd2Password()
 const app = express()
 app.use(cors())
 app.use(bodyParser.json())
@@ -24,12 +26,15 @@ app.post('/login', async (req, res) => {
 app.post('/register', async (req, res) => {
     console.log('reg details', req.body)
 
-    await conn.execute(
-        'INSERT INTO users VALUES (?, ?)',
-        [req.body.username, req.body.password]
-    )
-
-    res.send('User registered')
+    const password = req.body.password
+    hasher({ password: password }, async (err, pass, salt, hash) => {
+        console.log('hashing')
+        await conn.execute(
+            'INSERT INTO users VALUES (?, ?, ?)',
+            [req.body.username, hash, salt]
+        )
+        res.send('User registered')
+    })
 })
 
 app.listen(port, () => {
