@@ -14,16 +14,29 @@
     <br />
     <button id="loginButton">login</button>
     <button id="registerButton">register</button>
+    <button id="secretButton">Get secret data</button>
+    <div id="protectedContent"></div>
 </body>
 <script defer>
     const loginButton = document.getElementById("loginButton")
     const registerButton = document.getElementById("registerButton")
+    const secretButton = document.getElementById("secretButton")
+    const div = document.getElementById("protectedContent")
+    
+    secretButton.onclick = () => {
+        fetch('http://127.0.0.1:3000/protected', {
+            credentials: 'include'
+        })
+        .then(res => res.text())
+        .then(txt => div.innerText = txt)
+    }
 
     registerButton.onclick = () => {
         const username = document.getElementById("username")
         const password = document.getElementById("password")
 
         fetch('http://127.0.0.1:3000/register', {
+            credentials: 'include',
             body: JSON.stringify({
                 username: username.value,
                 password: password.value,
@@ -39,6 +52,7 @@
         const username = document.getElementById("username")
         const password = document.getElementById("password")
         fetch('http://127.0.0.1:3000/login', {
+            credentials: 'include',
             body: JSON.stringify({
                 username: username.value,
                 password: password.value,
